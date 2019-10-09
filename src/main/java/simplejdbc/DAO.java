@@ -169,5 +169,47 @@ public class DAO {
 		return result;
 
 	}
+        
+	public void addProduct(ProductEntity product) throws SQLException, DAOException {
+
+		String req = "INSERT INTO PRODUCT VALUES(?, ?, ?)";
+		try (   Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(req)
+                ) {
+			stmt.setInt(1, product.getId());
+			stmt.setString(2, product.getName());
+			stmt.setFloat(3, product.getPrice());
+
+			stmt.executeUpdate();
+
+		}catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
+		
+	}
+        
+        public ProductEntity findProduct(int productId) throws SQLException, DAOException {
+            ProductEntity result = null;
+		
+            String req = "SELECT * FROM PRODUCT WHERE ID = ?";
+            try (Connection myConnection = myDataSource.getConnection(); 
+                PreparedStatement statement = myConnection.prepareStatement(req)) {
+		statement.setInt(1, productId);
+                
+		try ( ResultSet resultSet = statement.executeQuery()) {
+			if (resultSet.next()) {
+                            result = new ProductEntity(productId, 
+                            resultSet.getString("Name"),
+                            resultSet.getFloat("Price"));
+				}
+			}
+		}catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
+            
+		return result;		
+	}
 
 }

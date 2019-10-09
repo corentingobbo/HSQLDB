@@ -126,6 +126,14 @@ public class DAOTest {
 			// On doit passer par ici, violation d'intégrité référentielle
 		}
 	}
+        
+        
+        @Test
+	public void testNewProduct() throws SQLException, DAOException {
+		ProductEntity product = new ProductEntity(2, "Un nouveau produit", 12.45f);
+		myDAO.addProduct(product);
+		assertEquals(product, myDAO.findProduct(2));
+	}
 
 	public static DataSource getTestDataSource() {
 		org.hsqldb.jdbc.JDBCDataSource ds = new org.hsqldb.jdbc.JDBCDataSource();
